@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block title %}Create account — TaskVault{% endblock %}
+{% block bodyclass %}gate{% endblock %}
+
+{% block content %}
+<div class="gate-card">
+  <span class="brand-mark brand-mark-lg" aria-hidden="true"></span>
+  <h1 class="gate-title">Create your vault</h1>
+  <p class="gate-sub">Takes about ten seconds.</p>
+
+  <form method="post">
+    <label class="field-block">
+      <span>Username</span>
+      <input type="text" name="username" minlength="3" required autocomplete="username" autofocus>
+    </label>
+    <label class="field-block">
+      <span>Password</span>
+      <input type="password" name="password" minlength="6" required autocomplete="new-password">
+    </label>
+    <label class="field-block">
+      <span>Confirm password</span>
+      <input type="password" name="confirm" minlength="6" required autocomplete="new-password">
+    </label>
+    <button class="btn-primary btn-wide" type="submit">Create account</button>
+  </form>
+
+  <p class="gate-alt">Already have one? <a href="{{ url_for('login') }}">Sign in</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block title %}Sign in — TaskVault{% endblock %}
+{% block bodyclass %}gate{% endblock %}
+
+{% block content %}
+<div class="gate-card">
+  <span class="brand-mark brand-mark-lg" aria-hidden="true"></span>
+  <h1 class="gate-title">Task<em>Vault</em></h1>
+  <p class="gate-sub">Your tasks, locked to your account.</p>
+
+  <form method="post">
+    <label class="field-block">
+      <span>Username</span>
+      <input type="text" name="username" required autocomplete="username" autofocus>
+    </label>
+    <label class="field-block">
+      <span>Password</span>
+      <input type="password" name="password" required autocomplete="current-password">
+    </label>
+    <button class="btn-primary btn-wide" type="submit">Sign in</button>
+  </form>
+
+  <p class="gate-alt">No account yet? <a href="{{ url_for('register') }}">Create one</a></p>
+
+  <p class="demo-hint">
+    <strong>Try it:</strong> username <code>demo</code> / password <code>demo123</code>
+  </p>
+</div>
+{% endblock %}

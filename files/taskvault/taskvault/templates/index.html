@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+{% block title %}Your tasks — TaskVault{% endblock %}
+
+{% block content %}
+
+<section class="ledger">
+  <div class="ledger-stat">
+    <span class="ledger-num">{{ counts.active or 0 }}</span>
+    <span class="ledger-label">Open</span>
+  </div>
+  <div class="ledger-stat">
+    <span class="ledger-num">{{ counts.done or 0 }}</span>
+    <span class="ledger-label">Filed</span>
+  </div>
+  <div class="ledger-stat">
+    <span class="ledger-num">{{ counts.total or 0 }}</span>
+    <span class="ledger-label">Total records</span>
+  </div>
+</section>
+
+<form class="composer" method="post" action="{{ url_for('add_task') }}">
+  <input type="hidden" name="view" value="{{ view }}">
+  <input class="composer-title" type="text" name="title" placeholder="What needs doing?" maxlength="200" required autocomplete="off">
+  <textarea class="composer-notes" name="notes" rows="2" placeholder="Notes (optional)" maxlength="1000"></textarea>
+  <div class="composer-row">
+    <label class="field">
+      <span>Due</span>
+      <input type="date" name="due_date">
+    </label>
+    <label class="field">
+      <span>Priority</span>
+      <select name="priority">
+        {% for p in priorities %}
+          <option value="{{ p }}" {% if p == 'normal' %}selected{% endif %}>{{ p|capitalize }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <button class="btn-primary" type="submit">Add to vault</button>
+  </div>
+</form>
+
+<nav class="tabs">
+  <a class="tab {% if view == 'active' %}is-on{% endif %}" href="{{ url_for('index', view='active') }}">Open</a>
+  <a class="tab {% if view == 'done' %}is-on{% endif %}" href="{{ url_for('index', view='done') }}">Filed</a>
+  <a class="tab {% if view == 'all' %}is-on{% endif %}" href="{{ url_for('index', view='all') }}">All</a>
+</nav>
+
+{% if tasks %}
+<ul class="records">
+  {% for task in tasks %}
+  <li class="record p-{{ task.priority }} {% if task.completed %}is-done{% endif %}">
+
+    <form class="record-check" method="post" action="{{ url_for('toggle_task', task_id=task.id) }}">
+      <input type="hidden" name="view" value="{{ view }}">
+      <button type="submit" class="checkbox" aria-label="{% if task.completed %}Reopen{% else %}Mark done{% endif %}">
+        {% if task.completed %}&#10003;{% endif %}
+      </button>
+    </form>
+
+    <div class="record-body">
+      <p class="record-title">{{ task.title }}</p>
+      {% if task.notes %}<p class="record-notes">{{ task.notes }}</p>{% endif %}
+      <p class="record-meta">
+        <span class="rec-id">TV-{{ '%04d' % task.id }}</span>
+        <span class="rec-pri">{{ task.priority }}</span>
+        <span class="rec-due {% if task.due_date|overdue and not task.completed %}is-late{% endif %}">
+          {{ task.due_date|prettydate }}
+        </span>
+      </p>
+    </div>
+
+    <div class="record-actions">
+      <a class="btn-quiet" href="{{ url_for('edit_task', task_id=task.id) }}">Edit</a>
+      <form method="post" action="{{ url_for('delete_task', task_id=task.id) }}"
+            onsubmit="return confirm('Delete this task permanently?');">
+        <input type="hidden" name="view" value="{{ view }}">
+        <button class="btn-quiet btn-danger" type="submit">Delete</button>
+      </form>
+    </div>
+
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="empty">
+  <p class="empty-head">Nothing filed here yet.</p>
+  <p>Add your first task using the box above.</p>
+</div>
+{% endif %}
+
+{% endblock %}

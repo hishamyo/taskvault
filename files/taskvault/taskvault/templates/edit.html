@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block title %}Edit task — TaskVault{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <p class="panel-eyebrow">Record TV-{{ '%04d' % task.id }}</p>
+  <h1 class="panel-title">Edit task</h1>
+
+  <form method="post">
+    <label class="field-block">
+      <span>Title</span>
+      <input type="text" name="title" value="{{ task.title }}" maxlength="200" required autofocus>
+    </label>
+
+    <label class="field-block">
+      <span>Notes</span>
+      <textarea name="notes" rows="4" maxlength="1000">{{ task.notes }}</textarea>
+    </label>
+
+    <div class="composer-row">
+      <label class="field">
+        <span>Due</span>
+        <input type="date" name="due_date" value="{{ task.due_date or '' }}">
+      </label>
+      <label class="field">
+        <span>Priority</span>
+        <select name="priority">
+          {% for p in priorities %}
+            <option value="{{ p }}" {% if p == task.priority %}selected{% endif %}>{{ p|capitalize }}</option>
+          {% endfor %}
+        </select>
+      </label>
+    </div>
+
+    <div class="panel-actions">
+      <button class="btn-primary" type="submit">Save changes</button>
+      <a class="btn-quiet" href="{{ url_for('index') }}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
